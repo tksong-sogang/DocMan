@@ -17,7 +17,7 @@ Vite + React + TypeScript, routing with `react-router`, lint with `oxlint`.
 - `npm run dev`: dev server at http://localhost:5173/DocMan/. This origin is registered in Google OAuth, so the port is fixed (`strictPort`).
 - `npm run build`: `tsc -b` type check + production build
 - `npm run lint`: oxlint
-- Unit tests (Vitest, added in Phase 2): `npx vitest run`. For one file: `npx vitest run src/utils/search.test.ts`; for one test by name: `npx vitest run -t "<name>"`
+- `npm test`: Vitest unit tests (pure utils in `src/utils/*.test.ts`). For one file: `npx vitest run src/utils/search.test.ts`; for one test by name: `npx vitest run -t "<name>"`
 
 Routing uses `createHashRouter` (`src/app/router.tsx`), so URLs look like `/DocMan/#/upload`. GitHub Pages cannot serve SPA fallbacks, so keep the hash router.
 
@@ -32,7 +32,9 @@ The OAuth client ID is public and comes from `.env.local`, which is not committe
 
 Structure-first rule from the Roadmap:
 - Each service in `src/services/` (auth, drive, gemini) is defined as a TypeScript interface.
-- A `Mock*` implementation backs Phases 2–3, and the real implementation replaces it in Phase 4.
+- A `Mock*` implementation (`src/services/mock/`) backs Phases 2–3, and the real implementation replaces it in Phase 4. The only swap point is `src/services/index.ts`.
+- React code reaches services through `AuthProvider`/`useAuth` and `IndexProvider`/`useIndex` (contexts in `src/app/`, hooks in `src/hooks/`). `IndexProvider` wraps the logged-in `Layout`, so the index loads once per login session; call `reload()` after a save.
+- Per-category limits, labels, and Drive folder names live in `CATEGORY_CONFIG` (`src/utils/category.ts`).
 - UI code in `src/features/` and `src/components/` must depend only on the interfaces, never call Google/Gemini APIs directly.
 - Don't mix phases: don't wire real APIs before the dummy UI (Phase 3) is complete.
 

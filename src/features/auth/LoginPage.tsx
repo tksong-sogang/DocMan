@@ -1,13 +1,13 @@
 import { useNavigate } from 'react-router'
-import { setSignedIn } from '../../app/tempAuth'
+import { useAuth } from '../../hooks/useAuth'
 
 /** P01 로그인 (F001, F004) */
 export default function LoginPage() {
   const navigate = useNavigate()
+  const { signIn } = useAuth()
 
-  // Phase 1 임시: 버튼을 누르면 로그인된 것으로 처리
-  const handleSignIn = () => {
-    setSignedIn(true)
+  const handleSignIn = async () => {
+    await signIn()
     navigate('/', { replace: true })
   }
 

@@ -1,4 +1,5 @@
 import { NavLink, Outlet } from 'react-router'
+import IndexProvider from './IndexProvider'
 
 const MENU = [
   { to: '/', label: '대시보드' },
@@ -10,7 +11,7 @@ const MENU = [
 /** 로그인 후 공통 레이아웃: 상단 메뉴 (PRD 3. 메뉴 구조) */
 export default function Layout() {
   return (
-    <>
+    <IndexProvider>
       <header className="app-header">
         <span className="app-title">DocMan</span>
         <nav className="app-nav">
@@ -24,6 +25,6 @@ export default function Layout() {
       <main className="app-main">
         <Outlet />
       </main>
-    </>
+    </IndexProvider>
   )
 }

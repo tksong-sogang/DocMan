@@ -1,13 +1,13 @@
 import { useNavigate } from 'react-router'
-import { setSignedIn } from '../../app/tempAuth'
+import { useAuth } from '../../hooks/useAuth'
 
 /** P05 설정 (F002, F003) */
 export default function SettingsPage() {
   const navigate = useNavigate()
+  const { signOut } = useAuth()
 
-  // Phase 1 임시 로그아웃
-  const handleSignOut = () => {
-    setSignedIn(false)
+  const handleSignOut = async () => {
+    await signOut()
     navigate('/login', { replace: true })
   }
 
