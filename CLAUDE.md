@@ -12,11 +12,14 @@ Write docs and user-facing text in Korean.
 
 ## Commands
 
-Planned Vite + React + TypeScript setup, created in Roadmap Phase 1. Update this section once `package.json` exists.
+Vite + React + TypeScript, routing with `react-router`, lint with `oxlint`.
 
-- `npm run dev`: dev server at http://localhost:5173. This origin is registered in Google OAuth, so don't change the port.
-- `npm run build`: type check + production build
-- `npx vitest run`: all unit tests. For one file: `npx vitest run src/utils/search.test.ts`; for one test by name: `npx vitest run -t "<name>"`
+- `npm run dev`: dev server at http://localhost:5173/DocMan/. This origin is registered in Google OAuth, so the port is fixed (`strictPort`).
+- `npm run build`: `tsc -b` type check + production build
+- `npm run lint`: oxlint
+- Unit tests (Vitest, added in Phase 2): `npx vitest run`. For one file: `npx vitest run src/utils/search.test.ts`; for one test by name: `npx vitest run -t "<name>"`
+
+Routing uses `createHashRouter` (`src/app/router.tsx`), so URLs look like `/DocMan/#/upload`. GitHub Pages cannot serve SPA fallbacks, so keep the hash router.
 
 ## Architecture
 
