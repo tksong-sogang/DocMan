@@ -19,6 +19,8 @@ interface Window {
         initTokenClient(config: {
           client_id: string
           scope: string
+          /** 이 계정으로 바로 로그인하도록 알려준다 (계정 선택 화면 생략) */
+          login_hint?: string
           callback(response: GisTokenResponse): void
           error_callback?(error: { type: string; message?: string }): void
         }): GisTokenClient

@@ -3,6 +3,8 @@ import type { AuthService } from './AuthService'
 
 const SCOPE = 'https://www.googleapis.com/auth/drive.file'
 const KEY = 'docman.session'
+/** 다시 로그인할 때 계정 선택 화면을 건너뛰도록 마지막 계정 이메일을 기억한다 */
+const HINT_KEY = 'docman.lastEmail'
 /** 만료 1분 전부터 만료로 본다 */
 const EXPIRY_MARGIN_MS = 60_000
 
@@ -12,9 +14,10 @@ interface Session {
   user: AuthUser
 }
 
+// 창을 닫았다 열어도 토큰이 유효한 동안(약 1시간)은 다시 로그인하지 않도록 localStorage에 둔다
 function readSession(): Session | null {
   try {
-    const raw = sessionStorage.getItem(KEY)
+    const raw = localStorage.getItem(KEY)
     return raw ? (JSON.parse(raw) as Session) : null
   } catch {
     return null
@@ -23,10 +26,22 @@ function readSession(): Session | null {
 
 function writeSession(session: Session | null) {
   try {
-    if (session) sessionStorage.setItem(KEY, JSON.stringify(session))
-    else sessionStorage.removeItem(KEY)
+    if (session) {
+      localStorage.setItem(KEY, JSON.stringify(session))
+      localStorage.setItem(HINT_KEY, session.user.email)
+    } else {
+      localStorage.removeItem(KEY)
+    }
   } catch {
     // 저장소를 쓸 수 없으면 메모리에만 유지 (새로고침하면 다시 로그인)
+  }
+}
+
+function readHint(): string | undefined {
+  try {
+    return localStorage.getItem(HINT_KEY) ?? undefined
+  } catch {
+    return undefined
   }
 }
 
@@ -42,7 +57,8 @@ async function fetchUser(accessToken: string): Promise<AuthUser> {
 
 /**
  * Google Identity Services 토큰 방식 로그인.
- * 토큰은 약 1시간 유효하고, 같은 탭에서 새로고침해도 유지되도록 sessionStorage에 둔다.
+ * 토큰은 약 1시간 유효하고, 창을 닫았다 열어도 유지되도록 localStorage에 둔다.
+ * 만료 뒤 다시 로그인할 때는 마지막 계정을 login_hint로 넘겨 계정 선택을 건너뛴다.
  */
 export class GoogleAuthService implements AuthService {
   private session: Session | null = readSession()
@@ -58,6 +74,7 @@ export class GoogleAuthService implements AuthService {
       const client = oauth2.initTokenClient({
         client_id: clientId,
         scope: SCOPE,
+        login_hint: readHint(),
         callback: async (response) => {
           if (response.error) {
             reject(new Error(`로그인하지 못했습니다 (${response.error_description ?? response.error})`))
@@ -93,6 +110,12 @@ export class GoogleAuthService implements AuthService {
     const token = this.session?.accessToken
     this.session = null
     writeSession(null)
+    // 직접 로그아웃하면 다른 계정으로 들어갈 수 있도록 계정 기억도 지운다
+    try {
+      localStorage.removeItem(HINT_KEY)
+    } catch {
+      // 무시
+    }
     if (token) window.google?.accounts.oauth2.revoke(token)
   }
 

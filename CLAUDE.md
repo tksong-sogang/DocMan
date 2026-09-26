@@ -39,7 +39,7 @@ Structure-first rule from the Roadmap:
 
 Real service notes:
 - `GoogleAuthService`
-  - Keeps the GIS token (~1h) in sessionStorage.
+  - Keeps the GIS token (~1h) in localStorage, so closing and reopening the window within the hour needs no login. The last email is passed as `login_hint` so re-login after expiry skips the account chooser. An explicit logout clears both.
   - Gets the account's name and email from Drive `about.get`, because the scope is only `drive.file`.
   - `requestAccessToken()` must run synchronously inside the click handler, otherwise the popup is blocked. The GIS script is preloaded in `index.html` for this reason.
   - When a token expires, Drive calls `markExpired()`. `AuthProvider` then logs the user out and P01 shows the expiry notice.
