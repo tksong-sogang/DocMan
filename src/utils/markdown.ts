@@ -62,6 +62,15 @@ export function buildTableRow(item: Item): string {
   return `| ${cells.join(' | ')} |`
 }
 
+/** 누적 표에서 원본 링크가 같은 행을 뺀다 (F017). 원본 링크는 자료마다 다르다 */
+export function removeRowByLink(tableMarkdown: string, originalLink: string): string {
+  const cell = `| ${linkCell({ originalLink } as Item)} |`
+  return tableMarkdown
+    .split('\n')
+    .filter((line) => !line.trimEnd().endsWith(cell))
+    .join('\n')
+}
+
 /** 누적 표의 헤더 바로 아래(맨 위)에 행을 넣는다 (F009) */
 export function insertRowAtTop(tableMarkdown: string, row: string): string {
   const lines = tableMarkdown.split('\n')

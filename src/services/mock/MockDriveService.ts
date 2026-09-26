@@ -1,7 +1,14 @@
 import type { AnalysisResult, IndexData, Item } from '../../types'
 import { CATEGORIES, CATEGORY_CONFIG } from '../../utils/category'
-import { addItemToIndex } from '../../utils/indexData'
-import { buildItemMarkdown, buildTableRow, createEmptyTable, insertRowAtTop, summaryFileName } from '../../utils/markdown'
+import { addItemToIndex, removeItemFromIndex } from '../../utils/indexData'
+import {
+  buildItemMarkdown,
+  buildTableRow,
+  createEmptyTable,
+  insertRowAtTop,
+  removeRowByLink,
+  summaryFileName,
+} from '../../utils/markdown'
 import type { DriveService } from '../drive/DriveService'
 import { buildDummyIndex } from './dummyData'
 import { delay } from './delay'
@@ -44,5 +51,15 @@ export class MockDriveService implements DriveService {
     this.files.set(tablePath, insertRowAtTop(table, buildTableRow(item)))
     this.index = addItemToIndex(this.index, item)
     return item
+  }
+
+  async deleteItem(item: Item) {
+    await delay(600)
+    this.index = removeItemFromIndex(this.index, item.id)
+    const folder = `DocMan/${CATEGORY_CONFIG[item.category].folder}`
+    const tablePath = `${folder}/${CATEGORY_CONFIG[item.category].tableFile}`
+    const table = this.files.get(tablePath)
+    if (table) this.files.set(tablePath, removeRowByLink(table, item.originalLink))
+    this.files.delete(`${folder}/summaries/${summaryFileName(item)}`)
   }
 }

@@ -67,7 +67,8 @@ DocMan/
 └─ Photos/{originals/, summaries/, Photos.md}
 ```
 
-- **Counts are incremented on each save, never recomputed** (explicit requirement). The category "topic count" is the number of keys in `topics[category]`.
+- **Counts are adjusted incrementally, never recomputed** (explicit requirement): +1 on save, -1 on delete (F017). A topic key is removed when its count reaches 0. The category "topic count" is the number of keys in `topics[category]`.
+- A delete (F017) runs in this order: remove the item from `index.json` → remove the table row by matching its original link → move the original file and the per-item MD to Drive trash.
 - A save (F009) has four steps, in this order:
   1. Upload the original file.
   2. Write the per-item MD to `summaries/`.

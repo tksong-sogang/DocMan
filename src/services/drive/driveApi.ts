@@ -93,6 +93,20 @@ export class DriveApi {
     return res.text()
   }
 
+  /** 휴지통으로 옮긴다 (30일 안에 Drive에서 복구 가능). 이미 없는 파일이면 무시한다 */
+  async trash(fileId: string): Promise<void> {
+    try {
+      await this.request(`${API}/files/${encodeURIComponent(fileId)}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+        body: JSON.stringify({ trashed: true }),
+      })
+    } catch (e) {
+      if (e instanceof DriveError && e.status === 404) return
+      throw e
+    }
+  }
+
   /** 파일 내용만 바꾼다 (누적 표 MD, index.json) */
   async updateContent(fileId: string, content: Blob): Promise<void> {
     await this.request(`${UPLOAD}/files/${encodeURIComponent(fileId)}?uploadType=media`, {

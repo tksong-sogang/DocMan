@@ -98,6 +98,16 @@ button,
   color: #fff;
 }
 
+.btn-danger {
+  border-color: #dc2626;
+  color: #dc2626;
+}
+
+/* 요약 박스에서 [삭제]를 [원문 보기]·[닫기]와 떨어뜨려 왼쪽에 둔다 */
+.modal-action-left {
+  margin-right: auto;
+}
+
 .muted {
   color: var(--muted);
 }

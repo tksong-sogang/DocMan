@@ -1,7 +1,14 @@
 import type { AnalysisResult, Category, IndexData, Item } from '../../types'
 import { CATEGORIES, CATEGORY_CONFIG } from '../../utils/category'
-import { addItemToIndex, createEmptyIndex } from '../../utils/indexData'
-import { buildItemMarkdown, buildTableRow, createEmptyTable, insertRowAtTop, summaryFileName } from '../../utils/markdown'
+import { addItemToIndex, createEmptyIndex, removeItemFromIndex } from '../../utils/indexData'
+import {
+  buildItemMarkdown,
+  buildTableRow,
+  createEmptyTable,
+  insertRowAtTop,
+  removeRowByLink,
+  summaryFileName,
+} from '../../utils/markdown'
 import type { AuthService } from '../auth/AuthService'
 import { DriveApi, DriveError, FOLDER_MIME } from './driveApi'
 import type { DriveService } from './DriveService'
@@ -125,6 +132,22 @@ export class GoogleDriveService implements DriveService {
       const index = JSON.parse(await this.api.readText(structure.indexId)) as IndexData
       await this.api.updateContent(structure.indexId, jsonBlob(addItemToIndex(index, item)))
       return item
+    })
+  }
+
+  /** index.json → 누적 표 → 파일 휴지통 순서로 지운다 (F017). 화면에 먼저 반영되도록 index부터 고친다 */
+  async deleteItem(item: Item) {
+    await this.guard(async () => {
+      const structure = await this.ensureStructure()
+      const tableId = structure.categories[item.category].tableId
+
+      const index = JSON.parse(await this.api.readText(structure.indexId)) as IndexData
+      await this.api.updateContent(structure.indexId, jsonBlob(removeItemFromIndex(index, item.id)))
+
+      const table = await this.api.readText(tableId)
+      await this.api.updateContent(tableId, markdownBlob(removeRowByLink(table, item.originalLink)))
+
+      await Promise.all([this.api.trash(item.originalFileId), this.api.trash(item.summaryFileId)])
     })
   }
 }

@@ -5,6 +5,7 @@ import {
   createEmptyTable,
   escapeCell,
   insertRowAtTop,
+  removeRowByLink,
   summaryFileName,
 } from './markdown'
 import { makeItem } from './testItem'
@@ -50,5 +51,18 @@ describe('buildItemMarkdown', () => {
 describe('summaryFileName', () => {
   it('날짜와 안전한 제목으로 만든다', () => {
     expect(summaryFileName(makeItem({ title: 'a/b: c' }))).toBe('20260926-100503_a_b__c.md')
+  })
+})
+
+describe('removeRowByLink', () => {
+  it('원본 링크가 같은 행만 빼고 헤더와 다른 행은 남긴다', () => {
+    let table = createEmptyTable('document')
+    table = insertRowAtTop(table, buildTableRow(makeItem({ title: '남김', originalLink: 'https://drive/a' })))
+    table = insertRowAtTop(table, buildTableRow(makeItem({ title: '삭제', originalLink: 'https://drive/b' })))
+    const result = removeRowByLink(table, 'https://drive/b')
+    expect(result).not.toContain('| 삭제 |')
+    expect(result).toContain('| 남김 |')
+    expect(result).toContain('| 제목 | 주제 |')
+    expect(removeRowByLink(result, 'https://drive/zzz')).toBe(result)
   })
 })

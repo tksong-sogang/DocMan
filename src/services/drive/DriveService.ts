@@ -9,4 +9,8 @@ export interface DriveService {
    * 원본 → 자료별 MD → 누적 표 맨 위 행 추가 → index.json 갱신 순서로 저장한다 (F009)
    */
   saveItem(file: File, analysis: AnalysisResult): Promise<Item>
+  /**
+   * index.json에서 빼기 → 누적 표에서 행 빼기 → 원본·자료별 MD를 휴지통으로, 순서로 지운다 (F017)
+   */
+  deleteItem(item: Item): Promise<void>
 }
