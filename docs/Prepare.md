@@ -8,7 +8,7 @@
 | # | 항목 | 필요한 시점 | 상태 |
 |---|---|---|---|
 | 1 | 개발 도구 (Node.js, Git, GitHub CLI) | Phase 1 | ✅ 설치됨 (Node v26.9.0, Git 2.55.0, gh 2.101.0) |
-| 2 | Google Cloud 프로젝트와 OAuth 클라이언트 ID | Phase 4 | ⬜ |
+| 2 | Google Cloud 프로젝트와 OAuth 클라이언트 ID | Phase 4 | ✅ 완료 (`.env.local`에 저장) |
 | 3 | Gemini API 키 | Phase 4 | ⬜ |
 | 4 | GitHub 저장소 | Phase 5 (원하면 더 일찍) | ⬜ (gh는 `tksong-sogang` 계정으로 로그인되어 있음) |
 | 5 | 안드로이드 폰 (Chrome) | Phase 4-6, 5 | ⬜ |
@@ -29,13 +29,19 @@ DocMan이 본인 Google Drive에 접근하려면 필요하다. 무료다.
 1. https://console.cloud.google.com 에 DocMan에서 쓸 Google 계정으로 로그인한다.
 2. 새 프로젝트를 만든다. 이름 예: `DocMan`
 3. **API 및 서비스 → 라이브러리**에서 **Google Drive API**를 찾아 **사용**을 누른다.
-4. **OAuth 동의 화면** (또는 **Google 인증 플랫폼**)을 설정한다.
-   - 앱 이름: `DocMan`, 지원 이메일: 본인 이메일
-   - 사용자 유형(대상): **외부(External)**
-   - 게시 상태: **테스트(Testing)** 그대로 둔다 (구글 검수가 필요 없다)
-   - **테스트 사용자**에 본인 Google 계정을 추가한다
+4. **Google 인증 플랫폼(Google Auth Platform)** 을 설정한다. (예전의 'OAuth 동의 화면'이 이 메뉴로 바뀌었다)
+   - 들어가는 곳: 왼쪽 메뉴 **API 및 서비스 → OAuth 동의 화면**, 또는 주소 https://console.cloud.google.com/auth/overview
+   - 처음이면 **시작하기(Get started)** 버튼을 누르고 순서대로 입력한다
+     1. 앱 정보: 앱 이름 `DocMan`, 사용자 지원 이메일 = 본인 이메일
+     2. 대상: **외부(External)**
+     3. 연락처 정보: 본인 이메일
+     4. 정책 동의 → **만들기**
+   - 만든 뒤 왼쪽 메뉴 **대상(Audience)** (https://console.cloud.google.com/auth/audience) 에서
+     - 게시 상태가 **테스트 중(Testing)** 인지 확인한다 (그대로 둔다, 구글 검수가 필요 없다)
+     - **테스트 사용자 → Add users**로 본인 Google 계정을 추가한다
    - 범위(Scope)는 따로 추가하지 않아도 된다 (앱이 로그인할 때 `drive.file`을 요청한다)
-5. **사용자 인증 정보(클라이언트) → OAuth 클라이언트 ID 만들기**
+   - 참고: 테스트 상태에서는 로그인 승인이 7일마다 만료될 수 있다. 다시 로그인하면 된다.
+5. 왼쪽 메뉴 **클라이언트(Clients) → 클라이언트 만들기** (https://console.cloud.google.com/auth/clients)
    - 애플리케이션 유형: **웹 애플리케이션**
    - **승인된 JavaScript 원본**에 아래 두 개를 추가한다
      - `http://localhost:5173` (개발용)
