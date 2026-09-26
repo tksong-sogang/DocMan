@@ -11,14 +11,14 @@ export default defineConfig({
     // PWA: 폰·PC에서 앱으로 설치 (F016). 앱 파일만 캐시하고 Google API 응답은 캐시하지 않는다
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
+      includeAssets: ['favicon.png', 'apple-touch-icon.png'],
       manifest: {
         name: 'DocMan',
         short_name: 'DocMan',
         description: '문서와 사진을 분석해서 Google Drive에 정리합니다',
         lang: 'ko',
-        theme_color: '#2563eb',
-        background_color: '#f7f7f8',
+        theme_color: '#031e3c',
+        background_color: '#031e3c',
         display: 'standalone',
         icons: [
           { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },

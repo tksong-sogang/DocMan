@@ -86,5 +86,5 @@ The app deploys from GitHub Actions to GitHub Pages at `https://tksong-sogang.gi
 
 - `.github/workflows/deploy.yml` runs on every push to `main`: lint → test → build → deploy.
 - The client ID comes from the repo Actions variable `VITE_GOOGLE_CLIENT_ID`.
-- PWA: `vite-plugin-pwa` (generateSW, autoUpdate) precaches only the app bundle. Icons in `public/` were generated from the shapes in `favicon.svg`.
+- PWA: `vite-plugin-pwa` (generateSW, autoUpdate) precaches only the app bundle. Icons in `public/` were cut from the user-provided image `../Gemini_Generated_Image_ds1hfnds1hfnds1h.png` (the navy rounded square is at x=102, y=103, 819px, radius 143). The maskable and apple-touch icons put the logo on a full-bleed navy background inside the 80% safe zone. Theme color is `#031e3c`.
 - The graph page is lazy-loaded (`LazyGraphPage`) because vis-network is about 650kB, and mammoth is loaded dynamically. Keep both out of the main bundle.
