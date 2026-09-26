@@ -1,7 +1,7 @@
 import { createHashRouter, Navigate } from 'react-router'
 import LoginPage from '../features/auth/LoginPage'
 import DashboardPage from '../features/dashboard/DashboardPage'
-import GraphPage from '../features/graph/GraphPage'
+import LazyGraphPage from '../features/graph/LazyGraphPage'
 import SettingsPage from '../features/settings/SettingsPage'
 import UploadPage from '../features/upload/UploadPage'
 import Layout from './Layout'
@@ -18,7 +18,7 @@ export const router = createHashRouter([
         children: [
           { index: true, element: <DashboardPage /> },
           { path: 'upload', element: <UploadPage /> },
-          { path: 'graph', element: <GraphPage /> },
+          { path: 'graph', element: <LazyGraphPage /> },
           { path: 'settings', element: <SettingsPage /> },
         ],
       },

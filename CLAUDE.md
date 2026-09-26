@@ -82,3 +82,8 @@ DocMan/
 ## Deployment
 
 The app deploys from GitHub Actions to GitHub Pages at `https://tksong-sogang.github.io/DocMan/`. Vite `base` must be `/DocMan/`.
+
+- `.github/workflows/deploy.yml` runs on every push to `main`: lint → test → build → deploy.
+- The client ID comes from the repo Actions variable `VITE_GOOGLE_CLIENT_ID`.
+- PWA: `vite-plugin-pwa` (generateSW, autoUpdate) precaches only the app bundle. Icons in `public/` were generated from the shapes in `favicon.svg`.
+- The graph page is lazy-loaded (`LazyGraphPage`) because vis-network is about 650kB, and mammoth is loaded dynamically. Keep both out of the main bundle.
