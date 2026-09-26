@@ -10,7 +10,7 @@
 | 1 | 개발 도구 (Node.js, Git, GitHub CLI) | Phase 1 | ✅ 설치됨 (Node v26.9.0, Git 2.55.0, gh 2.101.0) |
 | 2 | Google Cloud 프로젝트와 OAuth 클라이언트 ID | Phase 4 | ✅ 완료 (`.env.local`에 저장) |
 | 3 | Gemini API 키 | Phase 4 | ⬜ |
-| 4 | GitHub 저장소 | Phase 5 (원하면 더 일찍) | ⬜ (gh는 `tksong-sogang` 계정으로 로그인되어 있음) |
+| 4 | GitHub 저장소 | Phase 5 (원하면 더 일찍) | ✅ 완료 (https://github.com/tksong-sogang/DocMan, 배포 https://tksong-sogang.github.io/DocMan/) |
 | 5 | 안드로이드 폰 (Chrome) | Phase 4-6, 5 | ⬜ |
 
 ---
