@@ -45,4 +45,12 @@ export class MockAuthService implements AuthService {
   getUser() {
     return this.user
   }
+
+  onExpired() {
+    // 더미 토큰은 만료되지 않는다
+  }
+
+  markExpired() {
+    // 더미 토큰은 만료되지 않는다
+  }
 }

@@ -9,7 +9,7 @@ import { driveService } from '../../services'
 /** P01 로그인 (F001, F004) */
 export default function LoginPage() {
   const navigate = useNavigate()
-  const { signIn } = useAuth()
+  const { signIn, expired } = useAuth()
   const [status, setStatus] = useState<'idle' | 'signing-in' | 'initializing'>('idle')
   const [error, setError] = useState<string | null>(null)
 
@@ -31,6 +31,7 @@ export default function LoginPage() {
     <main className="login-page">
       <h1>DocMan</h1>
       <p className="muted">문서와 사진을 분석해서 Google Drive에 정리합니다</p>
+      {expired && <p className="notice">로그인이 만료되었습니다. 다시 로그인하세요</p>}
       {status === 'idle' ? (
         <Button variant="primary" onClick={handleSignIn}>
           Google로 로그인

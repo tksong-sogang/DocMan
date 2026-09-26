@@ -3,6 +3,8 @@ import type { AuthUser } from '../types'
 
 export interface AuthState {
   user: AuthUser | null
+  /** 토큰이 만료되어 로그아웃된 상태면 true (P01에서 안내) */
+  expired: boolean
   signIn(): Promise<void>
   signOut(): Promise<void>
 }

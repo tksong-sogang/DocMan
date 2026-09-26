@@ -12,7 +12,7 @@ const MIME_BY_EXT: Record<string, string> = {
 
 /**
  * PDF, 이미지: Gemini가 직접 읽으므로 파일을 그대로 넘긴다.
- * HEIC → JPEG 변환은 Phase 4-6에서 추가한다.
+ * HEIC·HEIF도 Gemini가 바로 읽으므로 변환하지 않는다.
  */
 export const fileExtractor: Extractor = {
   extensions: Object.keys(MIME_BY_EXT),

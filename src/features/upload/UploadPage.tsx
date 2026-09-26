@@ -25,7 +25,7 @@ const toMessage = (e: unknown, fallback: string) => (e instanceof Error ? e.mess
 /** P03 업로드 (F005~F009) */
 export default function UploadPage() {
   const navigate = useNavigate()
-  const { reload } = useIndex()
+  const { index, reload } = useIndex()
   const { geminiApiKey } = useSettings()
   const [step, setStep] = useState<Step>({ kind: 'idle' })
 
@@ -39,7 +39,8 @@ export default function UploadPage() {
     setStep({ kind: 'analyzing', file })
     try {
       const input = await extractor.extract(file)
-      const result = await analysisService.analyze(input, category, geminiApiKey ?? '')
+      const existingTopics = Object.keys(index?.topics[category] ?? {})
+      const result = await analysisService.analyze(input, category, geminiApiKey ?? '', existingTopics)
       setStep({ kind: 'review', file, result })
     } catch (e) {
       setStep({ kind: 'error', message: toMessage(e, '분석하지 못했습니다'), retry: () => analyze(file) })

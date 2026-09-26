@@ -15,6 +15,7 @@ Write docs and user-facing text in Korean.
 Vite + React + TypeScript, routing with `react-router`, lint with `oxlint`.
 
 - `npm run dev`: dev server at http://localhost:5173/DocMan/. This origin is registered in Google OAuth, so the port is fixed (`strictPort`).
+- `npm run dev:mock`: same server with `Mock*` services (`.env.mock` sets `VITE_USE_MOCK=true`). No login or API key is needed, so use it for UI work. The built-in browser pane blocks the Google sign-in popup when Claude clicks, so real sign-in can only be tested by the user.
 - `npm run build`: `tsc -b` type check + production build
 - `npm run lint`: oxlint
 - `npm test`: Vitest unit tests (pure utils in `src/utils/*.test.ts`). For one file: `npx vitest run src/utils/search.test.ts`; for one test by name: `npx vitest run -t "<name>"`
@@ -35,6 +36,21 @@ Structure-first rule from the Roadmap:
 - A `Mock*` implementation (`src/services/mock/`) backs Phases 2–3, and the real implementation replaces it in Phase 4. The only swap point is `src/services/index.ts`.
 - React code reaches services through `AuthProvider`/`useAuth` and `IndexProvider`/`useIndex` (contexts in `src/app/`, hooks in `src/hooks/`). `IndexProvider` wraps the logged-in `Layout`, so the index loads once per login session; call `reload()` after a save.
 - Per-category limits, labels, and Drive folder names live in `CATEGORY_CONFIG` (`src/utils/category.ts`).
+
+Real service notes:
+- `GoogleAuthService`
+  - Keeps the GIS token (~1h) in sessionStorage.
+  - Gets the account's name and email from Drive `about.get`, because the scope is only `drive.file`.
+  - `requestAccessToken()` must run synchronously inside the click handler, otherwise the popup is blocked. The GIS script is preloaded in `index.html` for this reason.
+  - When a token expires, Drive calls `markExpired()`. `AuthProvider` then logs the user out and P01 shows the expiry notice.
+- `GoogleDriveService`
+  - Resolves the folder and file IDs once (`ensureStructure`, memoized).
+  - New files use resumable upload (multipart is capped at 5MB). Existing files are replaced with `PATCH uploadType=media`.
+  - Re-reads `index.json` right before each save.
+- `GeminiAnalysisService`
+  - Calls `generateContent` on `gemini-flash-latest` with `responseSchema`. The file is sent inline and must be ≤14MB, because the whole request is capped at 20MB.
+  - Existing topics go into the prompt so topic names stay consistent. `parseAnalysis` enforces the per-category limits.
+  - HEIC/HEIF go to Gemini as-is, with no conversion.
 - UI code in `src/features/` and `src/components/` must depend only on the interfaces, never call Google/Gemini APIs directly.
 - Don't mix phases: don't wire real APIs before the dummy UI (Phase 3) is complete.
 
