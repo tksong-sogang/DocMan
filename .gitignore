@@ -9,3 +9,6 @@ coverage/
 Thumbs.db
 .vscode/
 .idea/
+
+# 의뢰자 개인 메모 (저장소에 올리지 않음)
+DocMan-서비스-개요.txt
